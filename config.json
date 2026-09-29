@@ -1,14 +1,29 @@
 {
-  "title": "Project title goes here",
-  "headline": "The one sentence someone should remember",
-  "description": "One sentence, under 160 characters, for search results and link previews.",
-  "site_url": "https://example.manhattan.institute",
-  "source_name": "Name of the dataset",
-  "source_url": "https://example.org/the-dataset",
-  "method_note": "What was counted, what was excluded, and what these numbers cannot show.",
-  "author": "Your name",
+  "title": "Tracking NYC School Performance",
+  "headline": "Tracking NYC school performance, year after year",
+  "description": "State test results for every NYC elementary and middle school, ranked against their peers each year since 2016.",
+  "site_url": "https://jenniferdweber.github.io/nyc-school-performance/",
+  "source_name": "NYC Department of Education, School Quality Reports",
+  "source_url": "https://data.cityofnewyork.us/Education/School-Quality-Reports-Data/dnpx-dfnc",
+  "method_note": "Each school is scored on the average performance level (1-4) of its students on the New York State grades 3-8 ELA and math assessments, then ranked against other NYC elementary and middle schools in the same year. Rankings are percentiles within New York City only - they are NOT the New York State Education Department's official accountability designations, which are calculated statewide using a different index. New York State replaced the grades 3-8 assessments in spring 2023 under the Next Generation Learning Standards; scores before and after that change are not directly comparable, so the two periods are shown separately. No tests were administered in spring 2020 or spring 2021.",
+  "author": "Jennifer Weber",
   "accent": "#14366b",
-  "source_data_url": null,
-  "value_column": "value",
-  "label_column": "label"
+  "source_data_url": "https://data.cityofnewyork.us/resource/dnpx-dfnc.csv",
+  "label_column": "school_name",
+  "value_column": "percentile",
+  "report_type": "EMS",
+  "metrics": {
+    "rating_mean_ela_all": "ela_mean",
+    "rating_mean_mth_all": "math_mean",
+    "prof_pct_ela_all": "ela_prof_pct",
+    "prof_pct_mth_all": "math_prof_pct",
+    "attendance_k8_all": "attendance"
+  },
+  "index_components": [
+    "ela_mean",
+    "math_mean"
+  ],
+  "new_standards_report_year": 2023,
+  "low_percentile_cutoff": 10,
+  "persistence_years": 2
 }

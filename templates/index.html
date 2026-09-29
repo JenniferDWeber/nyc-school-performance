@@ -6,58 +6,131 @@
 
 <title>{{ cfg.title }}</title>
 <meta name="description" content="{{ cfg.description }}">
-<link rel="canonical" href="{{ cfg.site_url }}/">
+<link rel="canonical" href="{{ cfg.site_url }}">
 
 <meta property="og:type" content="website">
-<meta property="og:url" content="{{ cfg.site_url }}/">
+<meta property="og:url" content="{{ cfg.site_url }}">
 <meta property="og:title" content="{{ cfg.headline }}">
 <meta property="og:description" content="{{ cfg.description }}">
-<meta property="og:image" content="{{ cfg.site_url }}/preview.png">
+<meta property="og:image" content="{{ cfg.site_url }}preview.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 
-<link rel="icon" href="/favicon.svg" type="image/svg+xml">
-<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
 
 <style>
   :root{
-    --accent: {{ cfg.accent }};
-    --paper:#fff; --ink:#111; --ink-2:#56544e; --rule:#e2e0d9; --bar:#e8e6df;
-    color-scheme: light dark;
+    color-scheme: light;
+    --surface-1:#fcfcfb; --plane:#f9f9f7;
+    --ink-1:#0b0b0b; --ink-2:#52514e; --ink-3:#898781;
+    --grid:#e1e0d9; --axis:#c3c2b7; --ring:rgba(11,11,11,.10);
+    --series:#2a78d6; --series-wash:rgba(42,120,214,.10);
+    --critical:#d03b3b; --critical-wash:rgba(208,59,59,.09);
+    --deemph:#c3c2b7;
+    --accent:{{ cfg.accent }};
   }
   @media (prefers-color-scheme: dark){
-    :root{ --paper:#12121a; --ink:#f0eee8; --ink-2:#a8a49a; --rule:#2e2d35; --bar:#24242e; }
+    :root:where(:not([data-theme="light"])){
+      color-scheme: dark;
+      --surface-1:#1a1a19; --plane:#0d0d0d;
+      --ink-1:#ffffff; --ink-2:#c3c2b7; --ink-3:#898781;
+      --grid:#2c2c2a; --axis:#383835; --ring:rgba(255,255,255,.10);
+      --series:#3987e5; --series-wash:rgba(57,135,229,.14);
+      --critical:#d03b3b; --critical-wash:rgba(208,59,59,.14);
+      --deemph:#4a4a46;
+      --accent:#7ea7e8;
+    }
   }
+  :root[data-theme="dark"]{
+    color-scheme: dark;
+    --surface-1:#1a1a19; --plane:#0d0d0d;
+    --ink-1:#ffffff; --ink-2:#c3c2b7; --ink-3:#898781;
+    --grid:#2c2c2a; --axis:#383835; --ring:rgba(255,255,255,.10);
+    --series:#3987e5; --series-wash:rgba(57,135,229,.14);
+    --critical:#d03b3b; --critical-wash:rgba(208,59,59,.14);
+    --deemph:#4a4a46; --accent:#7ea7e8;
+  }
+
   *{box-sizing:border-box}
+  html,body{margin:0}
   body{
-    margin:0; background:var(--paper); color:var(--ink);
-    font: 17px/1.55 ui-serif, Georgia, "Times New Roman", serif;
+    background:var(--plane); color:var(--ink-1);
+    font:16px/1.55 system-ui,-apple-system,"Segoe UI",sans-serif;
+    -webkit-font-smoothing:antialiased;
   }
-  .wrap{max-width:52rem; margin:0 auto; padding:3rem 1.25rem 5rem}
-  header{border-bottom:2px solid var(--ink); padding-bottom:1rem; margin-bottom:2rem}
-  h1{font-size:clamp(1.8rem,5vw,2.6rem); line-height:1.1; margin:0 0 .5rem}
-  .standfirst{margin:0; color:var(--ink-2); max-width:34rem}
-  h2{font-size:1.2rem; margin:2.5rem 0 .75rem}
+  .wrap{max-width:68rem; margin:0 auto; padding:2.5rem 16px 4rem}
+  h1{font-size:1.9rem; line-height:1.2; margin:0 0 .5rem; letter-spacing:-.015em}
+  h2{font-size:1.15rem; margin:0 0 .25rem; letter-spacing:-.01em}
+  .standfirst{color:var(--ink-2); margin:0; max-width:44rem}
+  .sub{color:var(--ink-3); font-size:.85rem; margin:.15rem 0 0}
+  section{margin-top:2.5rem}
+  .card{background:var(--surface-1); border:1px solid var(--ring); border-radius:10px; padding:1.1rem 1.2rem}
+
+  .controls{
+    display:flex; flex-wrap:wrap; gap:.6rem; align-items:flex-end;
+    margin-top:1.6rem; padding:.85rem 1rem;
+    background:var(--surface-1); border:1px solid var(--ring); border-radius:10px;
+  }
+  .controls input,.controls select{
+    font:inherit; font-size:.9rem; color:var(--ink-1);
+    background:var(--plane); border:1px solid var(--axis);
+    border-radius:7px; padding:.44rem .6rem; min-height:38px; max-width:100%;
+  }
+  .controls input{width:100%}
+  .controls label{font-size:.78rem; color:var(--ink-3); display:block; margin-bottom:.15rem}
+  .ctl{display:flex; flex-direction:column}
+
+  .kpis{display:grid; grid-template-columns:repeat(auto-fit,minmax(13rem,1fr)); gap:.8rem; margin-top:1rem}
+  .kpi{background:var(--surface-1); border:1px solid var(--ring); border-radius:10px; padding:1rem 1.1rem}
+  .kpi .label{font-size:.82rem; color:var(--ink-2)}
+  .kpi .value{font-size:2.1rem; font-weight:600; line-height:1.1; margin-top:.2rem}
+  .kpi .note{font-size:.8rem; color:var(--ink-3); margin-top:.2rem}
+
+  table{border-collapse:collapse; width:100%; font-size:.9rem}
+  th,td{text-align:left; padding:.5rem .6rem; border-bottom:1px solid var(--grid)}
+  th{font-size:.76rem; text-transform:uppercase; letter-spacing:.04em; color:var(--ink-3); font-weight:600; cursor:pointer; white-space:nowrap}
+  th[aria-sort="ascending"]::after{content:" \25B2"}
+  th[aria-sort="descending"]::after{content:" \25BC"}
+  td.num,th.num{text-align:right; font-variant-numeric:tabular-nums}
+  tbody tr{cursor:pointer}
+  tbody tr:hover{background:var(--series-wash)}
+  tbody tr[aria-selected="true"]{background:var(--series-wash); outline:2px solid var(--series); outline-offset:-2px}
+  .scroll{max-height:27rem; overflow:auto; border:1px solid var(--ring); border-radius:10px; background:var(--surface-1)}
+  .scroll thead th{position:sticky; top:0; background:var(--surface-1); z-index:1}
+
+  .flag{display:inline-flex; align-items:center; gap:.3rem; font-size:.78rem; color:var(--ink-2); white-space:nowrap}
+
+  .chartwrap{position:relative}
+  svg{display:block; width:100%; height:auto; overflow:visible}
+  .tip{
+    position:absolute; pointer-events:none; opacity:0; transform:translate(-50%,-115%);
+    background:var(--surface-1); border:1px solid var(--ring); border-radius:8px;
+    padding:.45rem .6rem; font-size:.82rem; white-space:nowrap; z-index:5;
+    box-shadow:0 2px 10px rgba(0,0,0,.12); transition:opacity .08s;
+  }
+  .tip b{display:block; font-weight:600}
+  .tip .muted{color:var(--ink-3)}
+
+  .legend{display:flex; flex-wrap:wrap; gap:1rem; font-size:.82rem; color:var(--ink-2); margin-top:.6rem}
+  .key{display:inline-flex; align-items:center; gap:.4rem}
+  .swatch{width:14px; height:3px; border-radius:2px; background:var(--series); flex:none}
+  .swatch.grey{background:var(--deemph)}
+  .swatch.band{height:11px; width:14px; background:var(--critical-wash); border:1px solid var(--critical); border-radius:3px}
+
+  .empty{color:var(--ink-3); padding:2rem 1rem; text-align:center}
+  .hint{font-size:.85rem; color:var(--ink-3)}
+  .detailgrid{display:grid; grid-template-columns:repeat(auto-fit,minmax(8rem,1fr)); gap:.7rem; margin-top:.9rem}
+  .stat{border:1px solid var(--ring); border-radius:8px; padding:.55rem .7rem; background:var(--plane)}
+  .stat .l{font-size:.75rem; color:var(--ink-3)}
+  .stat .v{font-size:1.15rem; font-weight:600; font-variant-numeric:tabular-nums}
+
+  footer{margin-top:3.5rem; border-top:1px solid var(--grid); padding-top:1rem; font-size:.88rem; color:var(--ink-2)}
+  footer p{margin:.45rem 0; max-width:44rem}
+  .dl{display:inline-block; margin-top:.5rem}
   a{color:var(--accent)}
-  @media (prefers-color-scheme: dark){ a{color:#9fc0f2} }
-
-  .chart{margin:1.5rem 0; display:grid; gap:.4rem}
-  .row{display:grid; grid-template-columns:minmax(6rem,10rem) 1fr auto; gap:.6rem; align-items:center}
-  .row .name{font-size:.9rem; color:var(--ink-2); overflow:hidden; text-overflow:ellipsis; white-space:nowrap}
-  .track{background:var(--bar); height:1.4rem; position:relative}
-  .fill{background:var(--accent); height:100%}
-  .num{font-variant-numeric:tabular-nums; font-size:.9rem}
-
-  .scroll{overflow-x:auto; -webkit-overflow-scrolling:touch}
-  table{border-collapse:collapse; width:100%; font-size:.92rem; min-width:30rem}
-  th,td{text-align:left; padding:.5rem .7rem; border-bottom:1px solid var(--rule)}
-  th{font-size:.78rem; text-transform:uppercase; letter-spacing:.06em; color:var(--ink-2)}
-  td:not(:first-child){font-variant-numeric:tabular-nums}
-
-  footer{margin-top:3.5rem; border-top:1px solid var(--rule); padding-top:1rem; font-size:.88rem; color:var(--ink-2)}
-  footer p{margin:.4rem 0; max-width:34rem}
-  .dl{display:inline-block; margin-top:.5rem; font-size:.9rem}
+  .visually-hidden{position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap}
+  @media (max-width:640px){ h1{font-size:1.5rem} .wrap{padding-top:1.6rem} .ctl{flex:1 1 100%} }
 </style>
 </head>
 <body>
@@ -68,38 +141,435 @@
     <p class="standfirst">{{ cfg.description }}</p>
   </header>
 
-  <h2>{{ value_col|title }} by {{ label_col }}</h2>
-  <div class="chart">
-    {% for r in rows[:25] %}
-    <div class="row">
-      <span class="name">{{ r[label_col] }}</span>
-      <span class="track"><span class="fill" style="width: {{ (r[value_col] / max_value * 100)|round(1) }}%"></span></span>
-      <span class="num">{{ '{:,}'.format(r[value_col]) }}</span>
+  <!-- One filter row, above everything it scopes. -->
+  <div class="controls" role="group" aria-label="Filter schools">
+    <div class="ctl" style="flex:1 1 16rem">
+      <label for="q">Search</label>
+      <input id="q" type="search" placeholder="School name or DBN, e.g. Fannie Lou or 12X286" autocomplete="off">
     </div>
-    {% endfor %}
+    <div class="ctl">
+      <label for="boro">Borough</label>
+      <select id="boro"><option value="">All boroughs</option></select>
+    </div>
+    <div class="ctl">
+      <label for="dist">District</label>
+      <select id="dist"><option value="">All districts</option></select>
+    </div>
+    <div class="ctl">
+      <label for="sector">Compared against</label>
+      <select id="sector">
+        <option value="all">All public schools</option>
+        <option value="district">District schools only</option>
+      </select>
+    </div>
+    <div class="ctl">
+      <label for="open">Schools</label>
+      <select id="open">
+        <option value="open">Currently reporting</option>
+        <option value="any">Include closed schools</option>
+      </select>
+    </div>
+    <div class="ctl">
+      <label for="only">Show</label>
+      <select id="only">
+        <option value="">Every school</option>
+        <option value="persistent">Persistently low only</option>
+        <option value="always">Low in every ranked year</option>
+      </select>
+    </div>
   </div>
+  <p class="sub" id="poolnote"></p>
 
-  <h2>The data</h2>
-  <div class="scroll">
-    <table>
-      <thead>
-        <tr>{% for c in columns %}<th>{{ c }}</th>{% endfor %}</tr>
-      </thead>
-      <tbody>
-        {% for r in rows %}
-        <tr>{% for c in columns %}<td>{{ r[c] }}</td>{% endfor %}</tr>
-        {% endfor %}
-      </tbody>
-    </table>
-  </div>
+  <section>
+    <h2>The citywide picture</h2>
+    <p class="sub" id="kpisub"></p>
+    <div class="kpis" id="kpis"></div>
+  </section>
+
+  <section>
+    <h2>Where persistently low schools are</h2>
+    <p class="sub">Share of each borough's schools that have spent two or more consecutive ranked years in the bottom <span class="cutv"></span>%.</p>
+    <div class="card" style="margin-top:.8rem">
+      <div class="chartwrap">
+        <svg id="boroChart" role="img" aria-labelledby="boroTitle"></svg>
+        <div class="tip" id="boroTip"></div>
+      </div>
+      <p id="boroTitle" class="visually-hidden">Bar chart: share of schools persistently in the bottom band, by borough.</p>
+    </div>
+  </section>
+
+  <section>
+    <h2>Schools</h2>
+    <p class="sub">Select any row to see that school's full history. Sort by any column.</p>
+    <div class="scroll" style="margin-top:.8rem">
+      <table id="tbl">
+        <thead><tr>
+          <th data-k="n">School</th>
+          <th data-k="b">Borough</th>
+          <th class="num" data-k="g">District</th>
+          <th class="num" data-k="pct">Latest percentile</th>
+          <th class="num" data-k="yl">Years low</th>
+          <th class="num" data-k="ls">Longest run</th>
+          <th data-k="pl">Status</th>
+        </tr></thead>
+        <tbody id="tbody"></tbody>
+      </table>
+      <p class="empty" id="empty" hidden>No school matches those filters.</p>
+    </div>
+    <p class="sub" id="count"></p>
+  </section>
+
+  <section id="detail" hidden>
+    <h2 id="dName"></h2>
+    <p class="sub" id="dMeta"></p>
+    <div class="card" style="margin-top:.8rem">
+      <div class="chartwrap">
+        <svg id="lineChart" role="img" aria-labelledby="lineTitle"></svg>
+        <div class="tip" id="lineTip"></div>
+      </div>
+      <p id="lineTitle" class="visually-hidden">Line chart: this school's citywide percentile in each ranked year.</p>
+      <div class="legend">
+        <span class="key"><span class="swatch"></span> This school</span>
+        <span class="key"><span class="swatch grey"></span> Citywide midpoint (50th percentile)</span>
+        <span class="key"><span class="swatch band"></span> Bottom <span class="cutv"></span>% &mdash; the low band</span>
+      </div>
+      <p class="hint" style="margin-top:.7rem">
+        The gap is 2020 and 2021, when no state tests were given. The vertical rule marks the
+        2023 change to the Next Generation standards &mdash; the line is broken there because scores
+        either side are not directly comparable. Percentile position is.
+      </p>
+      <div class="detailgrid" id="dStats"></div>
+      <details style="margin-top:.9rem">
+        <summary class="hint" style="cursor:pointer">View as a table</summary>
+        <table style="margin-top:.6rem">
+          <thead><tr><th>Year</th><th class="num">Percentile</th><th class="num">ELA</th><th class="num">Math</th><th class="num">Attendance</th><th>In low band</th></tr></thead>
+          <tbody id="dTable"></tbody>
+        </table>
+      </details>
+    </div>
+  </section>
 
   <footer>
-    <p><strong>Last updated {{ meta.updated }}.</strong> {{ meta.rows }} records.</p>
+    <p><strong>Last updated {{ meta.updated }}.</strong> {{ '{:,}'.format(meta.rows) }} school-year records covering {{ '{:,}'.format(meta.schools) }} schools.</p>
     <p>Source: <a href="{{ meta.source_url }}">{{ meta.source_name }}</a>. {{ cfg.method_note }}</p>
     <p>Compiled by {{ cfg.author }}.</p>
     <a class="dl" href="data.csv" download>Download the raw data (CSV)</a>
   </footer>
 
 </div>
+
+<script>
+const DATA = {{ data_json }};
+const YEARS = DATA.years, CUT = DATA.cutoff, BREAK = DATA.breakYear;
+const BREAK_I = YEARS.indexOf(BREAK);
+const $ = id => document.getElementById(id);
+const NF = n => (n === null || n === undefined) ? "—" : n.toFixed(1);
+const esc = s => String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+
+let sector = "all", sortKey = "yl", sortDir = -1, selected = null;
+
+const pctKey = () => sector === "all" ? "p" : "q";
+const sumKey = k => sector === "all" ? k : k + "2";
+const openOnly = () => $("open").value === "open";
+const inPool = s => (sector === "all" || !s.c) && (!openOnly() || s.o);
+const latest = s => {
+  const a = s[pctKey()];
+  for (let i = a.length - 1; i >= 0; i--) if (a[i] !== null) return a[i];
+  return null;
+};
+
+/* ---------- filters ---------------------------------------------------- */
+function visible(){
+  const q = $("q").value.trim().toLowerCase();
+  const b = $("boro").value, d = $("dist").value, only = $("only").value;
+  return DATA.schools.filter(s => {
+    if (!inPool(s)) return false;
+    if (q && !(s.n.toLowerCase().includes(q) || s.d.toLowerCase().includes(q))) return false;
+    if (b && s.b !== b) return false;
+    if (d && String(s.g) !== d) return false;
+    if (only === "persistent" && !s[sumKey("pl")]) return false;
+    if (only === "always" && s[sumKey("yl")] < YEARS.length) return false;
+    return true;
+  });
+}
+
+/* ---------- KPI tiles -------------------------------------------------- */
+function kpis(){
+  const pool = DATA.schools.filter(inPool);
+  const persistent = pool.filter(s => s[sumKey("pl")]).length;
+  const always = pool.filter(s => s[sumKey("yl")] === YEARS.length).length;
+
+  const byBoro = {};
+  pool.forEach(s => {
+    const t = byBoro[s.b] || (byBoro[s.b] = {n:0, p:0});
+    t.n++; if (s[sumKey("pl")]) t.p++;
+  });
+  const worst = Object.entries(byBoro)
+    .map(e => [e[0], e[1].p / e[1].n * 100])
+    .sort((a,b) => b[1] - a[1])[0];
+
+  const tiles = [
+    ["Persistently low", persistent.toLocaleString(),
+     "bottom " + CUT + "% for " + DATA.persistenceYears + "+ consecutive ranked years, of " +
+     pool.length.toLocaleString() + (openOnly() ? " schools still reporting" : " schools, closed ones included")],
+    ["Low in every ranked year", always.toLocaleString(),
+     "all " + YEARS.length + " years, " + YEARS[0] + " to " + YEARS[YEARS.length-1]],
+    ["Highest concentration", worst ? worst[0] : "—",
+     worst ? worst[1].toFixed(1) + "% of its schools are persistently low" : ""],
+  ];
+  $("kpis").innerHTML = tiles.map(t =>
+    '<div class="kpi"><div class="label">' + esc(t[0]) + '</div><div class="value">' + esc(t[1]) +
+    '</div><div class="note">' + esc(t[2]) + '</div></div>').join("");
+
+  $("kpisub").textContent = sector === "all"
+    ? "Every NYC public elementary and middle school, charters included, ranked against each other."
+    : "District schools only. Charter schools are excluded from both the ranking and the counts.";
+  $("poolnote").textContent = sector === "all"
+    ? "Charters are in the comparison pool. Switching to district schools only moves about eighteen schools across the low-band line."
+    : "Charters are out of the comparison pool, so every percentile here is a rank among district schools alone.";
+}
+
+/* ---------- borough chart: one series, one hue, no legend -------------- */
+function boroChart(){
+  const pool = DATA.schools.filter(inPool);
+  const agg = {};
+  pool.forEach(s => {
+    const t = agg[s.b] || (agg[s.b] = {n:0, p:0});
+    t.n++; if (s[sumKey("pl")]) t.p++;
+  });
+  const rows = Object.entries(agg)
+    .map(e => ({b:e[0], n:e[1].n, p:e[1].p, share:e[1].p / e[1].n * 100}))
+    .sort((a,b) => b.share - a.share);
+
+  const W = 720, rowH = 40, padL = 106, padR = 60, padB = 30;
+  const H = rows.length * rowH + padB + 8;
+  const max = Math.max(10, Math.ceil(Math.max.apply(null, rows.map(r => r.share)) / 5) * 5);
+  const x = v => padL + (v / max) * (W - padL - padR);
+  const svg = $("boroChart");
+  svg.setAttribute("viewBox", "0 0 " + W + " " + H);
+
+  let g = "";
+  for (let t = 0; t <= max; t += 5){
+    g += '<line x1="' + x(t) + '" y1="4" x2="' + x(t) + '" y2="' + (H - padB) + '" stroke="var(--grid)" stroke-width="1"/>';
+    g += '<text x="' + x(t) + '" y="' + (H - padB + 17) + '" fill="var(--ink-3)" font-size="11" text-anchor="middle" style="font-variant-numeric:tabular-nums">' + t + '%</text>';
+  }
+  rows.forEach((r,i) => {
+    const yc = i * rowH + 9, bh = 22;
+    const w = Math.max(3, x(r.share) - padL);
+    g += '<text x="' + (padL - 10) + '" y="' + (yc + bh/2 + 4) + '" fill="var(--ink-2)" font-size="12.5" text-anchor="end">' + esc(r.b) + '</text>';
+    g += '<path d="M' + padL + ' ' + yc + ' H' + (padL + w - 4) + ' a4,4 0 0 1 4,4 V' + (yc + bh - 4) +
+         ' a4,4 0 0 1 -4,4 H' + padL + ' Z" fill="var(--series)" class="bbar" ' +
+         'data-b="' + esc(r.b) + '" data-n="' + r.n + '" data-p="' + r.p + '" data-s="' + r.share.toFixed(1) + '"/>';
+    g += '<text x="' + (padL + w + 8) + '" y="' + (yc + bh/2 + 4) + '" fill="var(--ink-2)" font-size="12" style="font-variant-numeric:tabular-nums">' + r.share.toFixed(1) + '%</text>';
+  });
+  g += '<line x1="' + padL + '" y1="4" x2="' + padL + '" y2="' + (H - padB) + '" stroke="var(--axis)" stroke-width="1"/>';
+  svg.innerHTML = g;
+
+  const tip = $("boroTip");
+  svg.querySelectorAll(".bbar").forEach(el => {
+    el.addEventListener("mousemove", e => {
+      const r = svg.getBoundingClientRect();
+      tip.innerHTML = "<b>" + esc(el.dataset.b) + "</b>" + el.dataset.p + " of " + el.dataset.n +
+                      ' schools <span class="muted">(' + el.dataset.s + "%)</span>";
+      tip.style.left = (e.clientX - r.left) + "px";
+      tip.style.top = (e.clientY - r.top) + "px";
+      tip.style.opacity = 1;
+    });
+    el.addEventListener("mouseleave", () => { tip.style.opacity = 0; });
+  });
+}
+
+/* ---------- table ------------------------------------------------------ */
+const ICON_LOW =
+  '<svg width="12" height="12" viewBox="0 0 12 12" aria-hidden="true">' +
+  '<circle cx="6" cy="6" r="5" fill="none" stroke="var(--critical)" stroke-width="1.6"/>' +
+  '<line x1="6" y1="3.2" x2="6" y2="6.7" stroke="var(--critical)" stroke-width="1.6"/>' +
+  '<circle cx="6" cy="8.8" r="0.9" fill="var(--critical)"/></svg>';
+
+function table(rows){
+  const val = (s,k) =>
+      k === "pct" ? (latest(s) === null ? -1 : latest(s))
+    : k === "yl"  ? s[sumKey("yl")]
+    : k === "ls"  ? s[sumKey("ls")]
+    : k === "pl"  ? (s[sumKey("pl")] ? 1 : 0)
+    : k === "g"   ? (s.c ? 999 : s.g)
+    : s[k];
+
+  const sorted = rows.slice().sort((a,b) => {
+    const x = val(a, sortKey), y = val(b, sortKey);
+    if (x === y) return a.n.localeCompare(b.n);
+    return (typeof x === "string" ? x.localeCompare(y) : x - y) * sortDir;
+  });
+
+  $("tbody").innerHTML = sorted.slice(0, 400).map(s => {
+    const low = s[sumKey("pl")];
+    return '<tr data-d="' + esc(s.d) + '"' + (selected === s.d ? ' aria-selected="true"' : "") + '>' +
+      "<td>" + esc(s.n) + (s.c ? ' <span class="hint">· charter</span>' : "") + "</td>" +
+      "<td>" + esc(s.b) + "</td>" +
+      '<td class="num">' + (s.c ? "—" : s.g) + "</td>" +
+      '<td class="num">' + NF(latest(s)) + "</td>" +
+      '<td class="num">' + s[sumKey("yl")] + " of " + YEARS.length + "</td>" +
+      '<td class="num">' + s[sumKey("ls")] + "</td>" +
+      "<td>" + (low ? '<span class="flag">' + ICON_LOW + " Persistently low</span>" : '<span class="hint">—</span>') + "</td>" +
+      "</tr>";
+  }).join("");
+
+  $("empty").hidden = sorted.length > 0;
+  $("count").textContent = sorted.length > 400
+    ? "Showing the first 400 of " + sorted.length.toLocaleString() + " matching schools. Narrow the filters or sort to see others."
+    : sorted.length.toLocaleString() + " matching school" + (sorted.length === 1 ? "" : "s") + ".";
+
+  $("tbody").querySelectorAll("tr").forEach(tr => {
+    tr.addEventListener("click", () => select(tr.dataset.d));
+  });
+}
+
+/* ---------- the school chart: emphasis, one hue + gray ----------------- */
+function lineChart(s){
+  const W = 720, H = 300, padL = 46, padR = 24, padT = 16, padB = 36;
+  const vals = s[pctKey()];
+  const y0 = YEARS[0], y1 = YEARS[YEARS.length - 1];
+  const X = y => padL + (y - y0) / (y1 - y0) * (W - padL - padR);
+  const Y = v => padT + (1 - v / 100) * (H - padT - padB);
+
+  let g = "";
+  g += '<rect x="' + padL + '" y="' + Y(CUT) + '" width="' + (W - padL - padR) +
+       '" height="' + (H - padB - Y(CUT)) + '" fill="var(--critical-wash)"/>';
+  g += '<line x1="' + padL + '" y1="' + Y(CUT) + '" x2="' + (W - padR) + '" y2="' + Y(CUT) +
+       '" stroke="var(--critical)" stroke-width="1"/>';
+
+  [0,25,50,75,100].forEach(t => {
+    g += '<line x1="' + padL + '" y1="' + Y(t) + '" x2="' + (W - padR) + '" y2="' + Y(t) + '" stroke="var(--grid)" stroke-width="1"/>';
+    g += '<text x="' + (padL - 8) + '" y="' + (Y(t) + 4) + '" fill="var(--ink-3)" font-size="11" text-anchor="end" style="font-variant-numeric:tabular-nums">' + t + "</text>";
+  });
+  g += '<line x1="' + padL + '" y1="' + Y(50) + '" x2="' + (W - padR) + '" y2="' + Y(50) + '" stroke="var(--deemph)" stroke-width="2"/>';
+
+  const bx = (X(BREAK) + X(YEARS[BREAK_I - 1])) / 2;
+  g += '<line x1="' + bx + '" y1="' + padT + '" x2="' + bx + '" y2="' + (H - padB) + '" stroke="var(--axis)" stroke-width="1"/>';
+  g += '<text x="' + (bx + 5) + '" y="' + (padT + 11) + '" fill="var(--ink-3)" font-size="10.5">New standards →</text>';
+
+  YEARS.forEach(y => {
+    g += '<text x="' + X(y) + '" y="' + (H - padB + 18) + '" fill="var(--ink-3)" font-size="11" text-anchor="middle" style="font-variant-numeric:tabular-nums">' + y + "</text>";
+  });
+
+  [[0, BREAK_I], [BREAK_I, YEARS.length]].forEach(seg => {
+    const pts = [];
+    for (let i = seg[0]; i < seg[1]; i++) if (vals[i] !== null) pts.push(X(YEARS[i]) + "," + Y(vals[i]));
+    if (pts.length > 1)
+      g += '<polyline points="' + pts.join(" ") + '" fill="none" stroke="var(--series)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>';
+  });
+
+  vals.forEach((v,i) => {
+    if (v === null) return;
+    const colour = v <= CUT ? "var(--critical)" : "var(--series)";
+    g += '<circle cx="' + X(YEARS[i]) + '" cy="' + Y(v) + '" r="5" fill="' + colour + '" stroke="var(--surface-1)" stroke-width="2"/>';
+    g += '<circle cx="' + X(YEARS[i]) + '" cy="' + Y(v) + '" r="15" fill="transparent" class="pt" data-i="' + i + '"/>';
+  });
+
+  let lastI = -1;
+  vals.forEach((v,i) => { if (v !== null) lastI = i; });
+  if (lastI >= 0)
+    g += '<text x="' + X(YEARS[lastI]) + '" y="' + (Y(vals[lastI]) - 13) + '" fill="var(--ink-2)" font-size="11.5" text-anchor="middle" style="font-variant-numeric:tabular-nums">' + NF(vals[lastI]) + "</text>";
+
+  g += '<line x1="' + padL + '" y1="' + (H - padB) + '" x2="' + (W - padR) + '" y2="' + (H - padB) + '" stroke="var(--axis)" stroke-width="1"/>';
+  g += '<text transform="translate(13,' + ((H - padB) / 2 + padT) + ') rotate(-90)" fill="var(--ink-3)" font-size="11" text-anchor="middle">Citywide percentile</text>';
+
+  const svg = $("lineChart");
+  svg.setAttribute("viewBox", "0 0 " + W + " " + H);
+  svg.innerHTML = g;
+
+  const tip = $("lineTip");
+  svg.querySelectorAll(".pt").forEach(el => {
+    el.addEventListener("mouseenter", () => {
+      const i = +el.dataset.i;
+      const sc = svg.getBoundingClientRect().width / W;
+      tip.innerHTML = "<b>" + YEARS[i] + "</b>Percentile " + NF(vals[i]) +
+        '<span class="muted"><br>ELA ' + NF(s.e[i]) + " · Math " + NF(s.m[i]) + " (1–4 scale)</span>" +
+        (vals[i] <= CUT ? '<br><span style="color:var(--critical)">In the bottom ' + CUT + "%</span>" : "");
+      tip.style.left = (X(YEARS[i]) * sc) + "px";
+      tip.style.top = (Y(vals[i]) * sc) + "px";
+      tip.style.opacity = 1;
+    });
+    el.addEventListener("mouseleave", () => { tip.style.opacity = 0; });
+  });
+}
+
+function select(dbn){
+  const s = DATA.schools.find(x => x.d === dbn);
+  if (!s) return;
+  selected = dbn;
+  $("detail").hidden = false;
+  $("dName").textContent = s.n;
+  $("dMeta").textContent = s.d + " · " + s.b +
+    (s.c ? " · charter school" : " · community school district " + s.g);
+
+  const vals = s[pctKey()];
+  const stats = [
+    ["Latest percentile", NF(latest(s))],
+    ["Years in the low band", s[sumKey("yl")] + " of " + YEARS.length],
+    ["Longest consecutive run", String(s[sumKey("ls")])],
+    ["Status", s[sumKey("pl")] ? "Persistently low" : "Not persistently low"],
+  ];
+  $("dStats").innerHTML = stats.map(t =>
+    '<div class="stat"><div class="l">' + esc(t[0]) + '</div><div class="v">' + esc(t[1]) + "</div></div>").join("");
+
+  $("dTable").innerHTML = YEARS.map((y,i) =>
+    "<tr><td>" + y + '</td><td class="num">' + NF(vals[i]) + '</td><td class="num">' + NF(s.e[i]) +
+    '</td><td class="num">' + NF(s.m[i]) + '</td><td class="num">' +
+    (s.a[i] === null ? "—" : (s.a[i] * 100).toFixed(1) + "%") + "</td><td>" +
+    (vals[i] === null ? "no score" : (vals[i] <= CUT ? "yes" : "no")) + "</td></tr>").join("");
+
+  lineChart(s);
+  table(visible());
+  $("detail").scrollIntoView({behavior:"smooth", block:"nearest"});
+}
+
+/* ---------- wiring ----------------------------------------------------- */
+function render(){
+  kpis();
+  boroChart();
+  table(visible());
+  document.querySelectorAll(".cutv").forEach(e => { e.textContent = CUT; });
+}
+
+(function init(){
+  const boros = Array.from(new Set(DATA.schools.map(s => s.b))).sort();
+  $("boro").innerHTML += boros.map(b => "<option>" + esc(b) + "</option>").join("");
+  const dists = Array.from(new Set(DATA.schools.filter(s => !s.c).map(s => s.g))).sort((a,b) => a - b);
+  $("dist").innerHTML += dists.map(d => '<option value="' + d + '">District ' + d + "</option>").join("");
+
+  ["q","boro","dist","only"].forEach(id => $(id).addEventListener("input", () => table(visible())));
+  $("open").addEventListener("change", () => {
+    if (selected){
+      const s = DATA.schools.find(x => x.d === selected);
+      if (s && !inPool(s)){ selected = null; $("detail").hidden = true; }
+    }
+    render();
+  });
+
+  $("sector").addEventListener("change", e => {
+    sector = e.target.value;
+    if (selected){
+      const s = DATA.schools.find(x => x.d === selected);
+      if (s && !inPool(s)){ selected = null; $("detail").hidden = true; }
+    }
+    render();
+    if (selected) select(selected);
+  });
+
+  document.querySelectorAll("#tbl th").forEach(th => {
+    th.addEventListener("click", () => {
+      const k = th.dataset.k;
+      if (sortKey === k) sortDir *= -1;
+      else { sortKey = k; sortDir = (k === "n" || k === "b") ? 1 : -1; }
+      document.querySelectorAll("#tbl th").forEach(o => o.removeAttribute("aria-sort"));
+      th.setAttribute("aria-sort", sortDir === 1 ? "ascending" : "descending");
+      table(visible());
+    });
+  });
+
+  render();
+})();
+</script>
 </body>
 </html>
